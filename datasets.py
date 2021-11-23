@@ -102,6 +102,21 @@ class SensorDataset(Dataset):
 
         return data, target, idx
 
+    def train_valid_split(self, train_sbjs, valid_sbjs):
+        _data = np.c_[self.data, self.target]
+
+        train_data = _data[np.isin(_data[:, 0], train_sbjs)]
+        valid_data = _data[np.isin(_data[:, 0], valid_sbjs)]
+
+        # Normalize data wrt. statistics of the training set
+        mean = np.mean(train_data[:, 1:-1], axis=0)
+        std = np.std(train_data[:, 1:-1], axis=0)
+
+        train_data[:, 1:-1] = self.normalize(train_data[:, 1:-1], mean, std)
+        valid_data[:, 1:-1] = self.normalize(valid_data[:, 1:-1], mean, std)
+
+        return train_data, valid_data
+
     def loso_split(self, sbj):
         _data = np.c_[self.data, self.target]
 
