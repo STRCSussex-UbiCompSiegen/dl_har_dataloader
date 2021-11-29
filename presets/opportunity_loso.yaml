@@ -1,0 +1,81 @@
+---
+name: 'opportunity'
+data_archive: 'OpportunityUCIDataset.zip'
+data_files:
+  0:
+    - 'OpportunityUCIDataset/dataset/S1-Drill.dat'
+    - 'OpportunityUCIDataset/dataset/S1-ADL1.dat'
+    - 'OpportunityUCIDataset/dataset/S1-ADL2.dat'
+    - 'OpportunityUCIDataset/dataset/S1-ADL3.dat'
+    - 'OpportunityUCIDataset/dataset/S1-ADL4.dat'
+    - 'OpportunityUCIDataset/dataset/S1-ADL5.dat'
+  1:
+    - 'OpportunityUCIDataset/dataset/S2-Drill.dat'
+    - 'OpportunityUCIDataset/dataset/S2-ADL1.dat'
+    - 'OpportunityUCIDataset/dataset/S2-ADL2.dat'
+    - 'OpportunityUCIDataset/dataset/S2-ADL3.dat'
+    - 'OpportunityUCIDataset/dataset/S2-ADL4.dat'
+    - 'OpportunityUCIDataset/dataset/S2-ADL5.dat'
+  2:
+    - 'OpportunityUCIDataset/dataset/S3-Drill.dat'
+    - 'OpportunityUCIDataset/dataset/S3-ADL1.dat'
+    - 'OpportunityUCIDataset/dataset/S3-ADL2.dat'
+    - 'OpportunityUCIDataset/dataset/S3-ADL3.dat'
+    - 'OpportunityUCIDataset/dataset/S3-ADL4.dat'
+    - 'OpportunityUCIDataset/dataset/S3-ADL5.dat'
+  3:
+    - 'OpportunityUCIDataset/dataset/S4-Drill.dat'
+    - 'OpportunityUCIDataset/dataset/S4-ADL1.dat'
+    - 'OpportunityUCIDataset/dataset/S4-ADL2.dat'
+    - 'OpportunityUCIDataset/dataset/S4-ADL3.dat'
+    - 'OpportunityUCIDataset/dataset/S4-ADL4.dat'
+    - 'OpportunityUCIDataset/dataset/S4-ADL5.dat'
+class_map:
+  - "Null"
+  - "Open Door 1"
+  - "Open Door 2"
+  - "Close Door 1"
+  - "Close Door 2"
+  - "Open Fridge"
+  - "Close Fridge"
+  - "Open Dishwasher"
+  - "Close Dishwasher"
+  - "Open Drawer 1"
+  - "Close Drawer 1"
+  - "Open Drawer 2"
+  - "Close Drawer 2"
+  - "Open Drawer 3"
+  - "Close Drawer 3"
+  - "Clean Table"
+  - "Drink from Cup"
+  - "Toggle Switch"
+n_classes: 18
+n_channels: 113
+label_column: 249
+sensor_columns: [1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,
+                 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 50, 51, 52, 53, 54, 55, 56,
+                 57, 58, 63, 64, 65, 66, 67, 68, 69, 70, 71, 76, 77, 78, 79, 80, 81, 82, 83, 84, 89, 90, 91, 92, 93, 94,
+                 95, 96, 97, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
+                 120, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133]
+sr: 32
+url: 'https://archive.ics.uci.edu/ml/machine-learning-databases/00226/OpportunityUCIDataset.zip'
+down_sample: False
+label_map:
+  406516: 1
+  406517: 2
+  404516: 3
+  404517: 4
+  406520: 5
+  404520: 6
+  406505: 7
+  404505: 8
+  406519: 9
+  404519: 10
+  406511: 11
+  404511: 12
+  406508: 13
+  404508: 14
+  408512: 15
+  407521: 16
+  405506: 17
+delimiter: ' '

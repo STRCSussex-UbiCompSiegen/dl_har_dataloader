@@ -1,5 +1,5 @@
 ##################################################
-# Helper funtions for data loading.
+# Helper functions for data loading.
 ##################################################
 # Author: Lloyd Pellatt
 # Email: lp349@sussex.ac.uk
@@ -146,3 +146,32 @@ def create_rwhar_dataset(raw_dir):
     data = clean_rwhar(f'{raw_dir}/realworld2016_dataset.zip', sel_location='forearm')
 
     return data
+
+
+def makedir(path):
+    os.makedirs(path, exist_ok=True)
+    if not os.path.exists:
+        print(f"Created directory in {path}")
+
+
+def paint(text, color="green"):
+    """
+    :param text: string to be formatted
+    :param color: color used for formatting the string
+    :return:
+    """
+
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
+
+    if color == "blue":
+        return OKBLUE + text + ENDC
+    elif color == "green":
+        return OKGREEN + text + ENDC
+

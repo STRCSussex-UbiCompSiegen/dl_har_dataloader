@@ -10,8 +10,9 @@
 import zipfile
 import os
 
-from dl_har_public.utils import makedir
+from dl_har_dataloader.dataloader_utils import makedir
 import progressbar
+import yaml
 
 
 class ProgressBar():
@@ -33,9 +34,9 @@ class ProgressBar():
 class DatasetLoader:
 
     def __init__(self, name, data_dir, data_archive, data_files, class_map, n_classes, n_channels, label_column,
-                 sensor_columns, sr, user_column=None, user_map=None, down_sample=False, exclude_channels=None,
-                 label_map=None, variable_name=None, url=None, label_files=None, exclude_labels=None,
-                 n_channels_per_file=None, header=None, delimiter='None'):
+                 sensor_columns, sr, user_column=None, user_map=None, down_sample=False, label_map=None,
+                 variable_name=None, url=None, label_files=None, exclude_labels=None, n_channels_per_file=None,
+                 header=None, delimiter='None'):
         """
         :param str name: The name of the dataset, in lower case i.e. 'opportunity'.
         :param str data_dir: The directory containing the raw data (zip file).
@@ -58,8 +59,8 @@ class DatasetLoader:
         :param int user_column: The column indicating the user. Only if multiple user data is given in the same file.
         :param bool|int down_sample: Whether to downsample the data, and if so what factor to use. If downsampling is
          required, this should be an integer specifying the downsampling factor.
-        :param iterable (int) exclude_channels: If needed, a list of columns which should not be used.
-        :param dict (any: int) label_map: If necessary, a dictionary giving the mapping between existing labels and desired labels.
+        :param dict (any: int) label_map: If necessary, a dictionary giving the mapping between existing labels and
+        integer labels.
         :param str variable_name: Required if the dataset is contained in a .mat file. Specifies the variable containing
         the dataset.
         :param str|list (str) url: The URL where the dataset can be retrieved from, if not found in data_dir.
@@ -69,6 +70,8 @@ class DatasetLoader:
         entry in  each tuple is the index of the archive containing the file, and the second is the filepath.
         :param int n_channels_per_file: If sensor channels are split across multiple files, indicates how many per file.
         :param bool header: Which line to use as column names when reading data. None = no header, columns are numbered
+        :param str delimiter: Character marking the separation between values in the data files.
+        Typically ' ', ',' or '|'.
         """
 
         self.name = name
@@ -84,7 +87,6 @@ class DatasetLoader:
         self.user_column = user_column
         self.user_map = user_map
         self.down_sample = down_sample
-        self.exclude_channels = exclude_channels
         self.label_map = label_map
         self.exclude_labels = exclude_labels
         self.variable_name = variable_name
@@ -111,6 +113,8 @@ class DatasetLoader:
             self.multiple_recordings_per_user = True
 
     def open_zip(self):
+        """Find the data and return a zipfile or list of zipfiles
+        """
 
         path = self.check_data()
 
@@ -124,8 +128,6 @@ class DatasetLoader:
     def check_data(self):
         """Try to access to the file and checks if dataset is in the data directory
            In case the file is not found try to download it from original location
-
-        :param str path: Path to zip file
         """
 
         if not os.path.exists(self.data_dir):
@@ -145,6 +147,13 @@ class DatasetLoader:
         return paths
 
     def get_data_from_url(self, path, index=None):
+        """ Download the dataset from the given url. If multiple there are multiple urls, requires an index.
+
+        :param str path: The path where the dataset should be put.
+        :param int index: Which URL to download from (if self.url is a list).
+        :return: None
+
+        """
         import urllib.request
         # When dataset not found, try to download it
         print('... dataset path {0} not found'.format(path))
@@ -155,3 +164,18 @@ class DatasetLoader:
             origin = self.url
         print('... downloading data from {0}'.format(origin))
         urllib.request.urlretrieve(origin, path, ProgressBar())
+
+
+def load_preset(preset):
+    """Load a preset from a YAML config file in ./presets.
+
+    :param str preset: Name of preset to load.
+    :return dict: Dictionary containing arguments for a DatasetLoader instance read from the YAML preset file.
+    """
+
+    here = os.path.dirname(os.path.abspath(__file__))
+
+    with open(os.path.join(here, f'presets/{preset}.yaml')) as f:
+        config = yaml.safe_load(f)
+
+    return config

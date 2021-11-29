@@ -10,7 +10,7 @@ import numpy as np
 import torch
 from glob import glob
 from torch.utils.data.dataset import Dataset
-from utils import paint, plot_pie, plot_segment
+from dl_har_dataloader.dataloader_utils import paint
 
 __all__ = ["SensorDataset"]
 
@@ -84,10 +84,6 @@ class SensorDataset(Dataset):
                 )
             )
 
-        if self.verbose:
-            self.get_info()
-            self.get_distribution()
-
         self.n_channels = self.data.shape[-1] - 1
         self.n_classes = np.unique(self.target).shape[0]
 
@@ -140,40 +136,6 @@ class SensorDataset(Dataset):
         if prefix is not None:
             self.prefix = prefix
         return self
-
-    def get_info(self, n_samples=3):
-        print(paint(f"[-] Information on {self.dataset} dataset:"))
-        print("\t data: ", self.data.shape, self.data.dtype, type(self.data))
-        print("\t target: ", self.target.shape, self.target.dtype, type(self.target))
-
-        target_idx = [np.where(self.target == label)[0] for label in set(self.target)]
-        target_idx_samples = np.array(
-            [np.random.choice(idx, n_samples, replace=False) for idx in target_idx]
-        ).flatten()
-
-        for i, random_idx in enumerate(target_idx_samples):
-            data, target, index = self.__getitem__(random_idx)
-            if i == 0:
-                print(paint(f"[-] Information on segment #{random_idx}/{self.len}:"))
-                print("\t data: ", data.shape, data.dtype, type(data))
-                print("\t target: ", target.shape, target.dtype, type(target))
-                print("\t index: ", index, index.shape, index.dtype, type(index))
-
-            path_save = os.path.join(self.path_processed, "segments")
-
-            plot_segment(
-                data,
-                target,
-                index=index,
-                prefix=self.name,
-                path_save=path_save,
-                num_class=len(target_idx),
-            )
-
-    def get_distribution(self):
-        plot_pie(
-            self.target, self.name, os.path.join(self.path_processed, "distribution")
-        )
 
     def normalize(self, data, mean=None, std=None):
 

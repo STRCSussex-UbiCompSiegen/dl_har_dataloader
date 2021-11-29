@@ -1,0 +1,63 @@
+---
+name: 'rwhar'
+data_archive: 'realworld2016_dataset.zip'
+data_files:
+  1:
+    - None
+  2:
+    - None
+  3:
+    - None
+  4:
+    - None
+  5:
+    - None
+  6:
+    - None
+  7:
+    - None
+  8:
+    - None
+  9:
+    - None
+  10:
+    - None
+  11:
+    - None
+  12:
+    - None
+  13:
+    - None
+  14:
+    - None
+  15:
+    - None
+class_map:
+  - "Rope Jumping"
+  - "Lying"
+  - "Sitting"
+  - "Standing"
+  - "Walking"
+  - "Running"
+  - "Cycling"
+  - "Nordic Walking"
+  - "Ascending Stairs"
+  - "Descending Stairs"
+  - "Vacuum Cleaning"
+  - "Ironing"
+n_classes: 8
+n_channels: 3
+label_column: 'activity'
+sensor_columns: ['acc_x', 'acc_y', 'acc_z']
+sr: 100
+url: 'http://wifo5-14.informatik.uni-mannheim.de/sensor/dataset/realworld2016/realworld2016_dataset.zip'
+down_sample: 3
+label_map:
+  climbing_up: 1
+  jumping: 2
+  lying: 3
+  running: 4
+  sitting: 5
+  standing: 6
+  walking: 7
+
