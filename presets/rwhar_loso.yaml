@@ -49,9 +49,9 @@ n_classes: 8
 n_channels: 3
 label_column: 'activity'
 sensor_columns: ['acc_x', 'acc_y', 'acc_z']
-sr: 100
+sr: 50
 url: 'http://wifo5-14.informatik.uni-mannheim.de/sensor/dataset/realworld2016/realworld2016_dataset.zip'
-down_sample: 3
+down_sample: 2
 label_map:
   climbing_up: 1
   jumping: 2
