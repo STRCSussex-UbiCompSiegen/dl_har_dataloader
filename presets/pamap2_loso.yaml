@@ -7,13 +7,10 @@ data_files:
     - 'PAMAP2_Dataset/Optional/subject101.dat'
   102:
     - 'PAMAP2_Dataset/Protocol/subject102.dat'
-    - 'PAMAP2_Dataset/Optional/subject102.dat'
   103:
     - 'PAMAP2_Dataset/Protocol/subject103.dat'
-    - 'PAMAP2_Dataset/Optional/subject103.dat'
   104:
     - 'PAMAP2_Dataset/Protocol/subject104.dat'
-    - 'PAMAP2_Dataset/Optional/subject104.dat'
   105:
     - 'PAMAP2_Dataset/Protocol/subject105.dat'
     - 'PAMAP2_Dataset/Optional/subject105.dat'
@@ -22,7 +19,6 @@ data_files:
     - 'PAMAP2_Dataset/Optional/subject106.dat'
   107:
     - 'PAMAP2_Dataset/Protocol/subject107.dat'
-    - 'PAMAP2_Dataset/Optional/subject107.dat'
   108:
     - 'PAMAP2_Dataset/Protocol/subject108.dat'
     - 'PAMAP2_Dataset/Optional/subject108.dat'
