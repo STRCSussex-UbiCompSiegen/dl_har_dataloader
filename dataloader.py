@@ -36,7 +36,7 @@ class DatasetLoader:
     def __init__(self, name, data_dir, data_archive, data_files, class_map, n_classes, n_channels, label_column,
                  sensor_columns, sr, user_column=None, user_map=None, down_sample=False, label_map=None,
                  variable_name=None, url=None, label_files=None, exclude_labels=None, n_channels_per_file=None,
-                 header=None, delimiter='None'):
+                 header=None, delimiter=None, needs_sync=False, time_column=None):
         """
         :param str name: The name of the dataset, in lower case i.e. 'opportunity'.
         :param str data_dir: The directory containing the raw data (zip file).
@@ -72,28 +72,11 @@ class DatasetLoader:
         :param bool header: Which line to use as column names when reading data. None = no header, columns are numbered
         :param str delimiter: Character marking the separation between values in the data files.
         Typically ' ', ',' or '|'.
+        :param bool needs_sync: Whether the sensor channels need to be synchronized.
+        :param str|int time_column: Column containing timestamps for synchronization of data.
         """
 
-        self.name = name
-        self.data_dir = data_dir
-        self.data_archive = data_archive
-        self.data_files = data_files
-        self.class_map = class_map
-        self.n_classes = n_classes
-        self.n_channels = n_channels
-        self.label_column = label_column
-        self.sensor_columns = sensor_columns
-        self.sr = sr
-        self.user_column = user_column
-        self.user_map = user_map
-        self.down_sample = down_sample
-        self.label_map = label_map
-        self.exclude_labels = exclude_labels
-        self.variable_name = variable_name
-        self.url = url
-        self.label_files = label_files
-        self.header = header
-        self.delimiter = delimiter
+        self.__dict__.update(locals())
 
         if self.delimiter is None:
             self.delimiter = ','
