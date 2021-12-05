@@ -56,9 +56,9 @@ class SensorDataset(Dataset):
             self.name = 'No name specified'
         if prefix is None:
             self.prefix = 'No prefix specified'
-            self.path_dataset = glob(os.path.join(path_processed, '*.npz'))
+            self.path_dataset = sorted(glob(os.path.join(path_processed, 'User_[0-9]*.npz')))
         else:
-            self.path_dataset = glob(os.path.join(path_processed, f'{prefix}*.npz'))
+            self.path_dataset = glob(os.path.join(path_processed, f'*{prefix}*.npz'))
         data = [np.load(path, allow_pickle=True) for path in self.path_dataset]
         for i, x in enumerate(data):
             if i == 0:
@@ -98,35 +98,13 @@ class SensorDataset(Dataset):
 
         return data, target, idx
 
-    def train_valid_split(self, train_sbjs, valid_sbjs):
-        _data = np.c_[self.data, self.target]
-
-        train_data = _data[np.isin(_data[:, 0], train_sbjs)]
-        valid_data = _data[np.isin(_data[:, 0], valid_sbjs)]
-
-        # Normalize data wrt. statistics of the training set
-        mean = np.mean(train_data[:, 1:-1], axis=0)
-        std = np.std(train_data[:, 1:-1], axis=0)
-
-        train_data[:, 1:-1] = self.normalize(train_data[:, 1:-1], mean, std)
-        valid_data[:, 1:-1] = self.normalize(valid_data[:, 1:-1], mean, std)
-
-        return train_data, valid_data
-
     def loso_split(self, sbj):
         _data = np.c_[self.data, self.target]
 
-        sbj_data = _data[_data[:, 0] == sbj]
         not_sbj_data = _data[_data[:, 0] != sbj]
+        sbj_data = _data[_data[:, 0] == sbj]
 
-        # Normalize data wrt. statistics of the training set
-        mean = np.mean(not_sbj_data[:, 1:-1], axis=0)
-        std = np.std(not_sbj_data[:, 1:-1], axis=0)
-
-        not_sbj_data[:, 1:-1] = self.normalize(not_sbj_data[:, 1:-1], mean, std)
-        sbj_data[:, 1:-1] = self.normalize(sbj_data[:, 1:-1], mean, std)
-
-        return sbj_data, not_sbj_data
+        return not_sbj_data, sbj_data
 
     def alter_data(self, data, target, prefix=None):
         self.data = data
@@ -137,6 +115,5 @@ class SensorDataset(Dataset):
             self.prefix = prefix
         return self
 
-    def normalize(self, data, mean=None, std=None):
-
-        return (data - mean) / std
+    def normalize(self, mean=None, std=None):
+        self.data[:, 1:] = (self.data[:, 1:] - mean) / std

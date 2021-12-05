@@ -159,8 +159,8 @@ def preprocess_dataset(dataset, args):
             data_x = np.array(x)
             data_y = np.array(y, dtype=np.uint8)
             print(
-                f'Saving file User_{user}_data.npz containing data {data_x.shape}, labels {data_y.shape}')
-            np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{user}_data.npz', data=data_x, target=data_y)
+                f'Saving file User_{str(user).zfill(3)}_data.npz containing data {data_x.shape}, labels {data_y.shape}')
+            np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{str(user).zfill(3)}_data.npz', data=data_x, target=data_y)
 
     else:
 
@@ -174,8 +174,8 @@ def preprocess_dataset(dataset, args):
                     separate(file_end_indices, data_x, data_y, f'data/{dataset.name}', user)
                 else:
                     print(
-                        f'Saving file User_{user}_data.npz containing data {data_x.shape}, labels {data_y.shape}')
-                    np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{user}_data.npz', data=data_x,
+                        f'Saving file User_{str(user).zfill(3)}_data.npz containing data {data_x.shape}, labels {data_y.shape}')
+                    np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{str(user).zfill(3)}_data.npz', data=data_x,
                                         target=data_y)
         else:
             print('Datasets contained in a single file not yet implemented')

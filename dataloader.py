@@ -10,7 +10,7 @@
 import zipfile
 import os
 
-from dl_har_dataloader.dataloader_utils import makedir
+from dataloader_utils import makedir
 import progressbar
 import yaml
 
