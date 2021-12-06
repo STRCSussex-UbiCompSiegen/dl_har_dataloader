@@ -11,7 +11,7 @@ import torch
 from glob import glob
 from torch.utils.data.dataset import Dataset
 from dl_har_dataloader.dataloader_utils import paint
-from .dataset_utils import sliding_window
+from .dataset_utils import sliding_window, normalize
 
 __all__ = ["SensorDataset"]
 
@@ -64,11 +64,13 @@ class SensorDataset(Dataset):
         elif isinstance(prefix, list):
             self.prefix = prefix
             self.path_dataset = []
-            self.path_dataset.extend([glob(os.path.join(path_processed, f'{prefix}*.npz')) for prefix in prefix])
+            for prefix in prefix:
+                self.path_dataset.extend(glob(os.path.join(path_processed, f'{prefix}*.npz')))
 
         self.data = np.concatenate([np.load(path, allow_pickle=True)['data'] for path in self.path_dataset])
         self.target = np.concatenate([np.load(path, allow_pickle=True)['target'] for path in self.path_dataset])
 
+        self.data = normalize(self.data)
 
         self.data, self.target = sliding_window(self.data, self.target, self.window, self.stride)
 
@@ -101,7 +103,3 @@ class SensorDataset(Dataset):
         idx = torch.from_numpy(np.array(index))
 
         return data, target, idx
-
-    def normalize(self, data, mean=None, std=None):
-
-        return (data - mean) / std
