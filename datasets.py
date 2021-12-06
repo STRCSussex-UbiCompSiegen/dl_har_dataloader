@@ -11,6 +11,7 @@ import torch
 from glob import glob
 from torch.utils.data.dataset import Dataset
 from dl_har_dataloader.dataloader_utils import paint
+from .dataset_utils import sliding_window
 
 __all__ = ["SensorDataset"]
 
@@ -57,18 +58,20 @@ class SensorDataset(Dataset):
         if prefix is None:
             self.prefix = 'No prefix specified'
             self.path_dataset = glob(os.path.join(path_processed, '*.npz'))
-        else:
+        elif isinstance(prefix, str):
+            self.prefix = prefix
             self.path_dataset = glob(os.path.join(path_processed, f'{prefix}*.npz'))
-        data = [np.load(path, allow_pickle=True) for path in self.path_dataset]
-        for i, x in enumerate(data):
-            if i == 0:
-                self.data = np.c_[np.full(len(x["data"]), i), x["data"]]
-                self.target = x["target"]
-            else:
-                self.data = np.concatenate((self.data, np.c_[np.full(len(x["data"]), i), x["data"]]), axis=0)
-                self.target = np.concatenate((self.target, x["target"]))
+        elif isinstance(prefix, list):
+            self.prefix = prefix
+            self.path_dataset = []
+            self.path_dataset.extend([glob(os.path.join(path_processed, f'{prefix}*.npz')) for prefix in prefix])
 
-        self.num_sbj = len(np.unique(self.data[:, 0]))
+        self.data = np.concatenate([np.load(path, allow_pickle=True)['data'] for path in self.path_dataset])
+        self.target = np.concatenate([np.load(path, allow_pickle=True)['target'] for path in self.path_dataset])
+
+
+        self.data, self.target = sliding_window(self.data, self.target, self.window, self.stride)
+
         self.len = self.data.shape[0]
         assert self.data.shape[0] == self.target.shape[0]
         if name is None:
@@ -87,6 +90,7 @@ class SensorDataset(Dataset):
         self.n_channels = self.data.shape[-1] - 1
         self.n_classes = np.unique(self.target).shape[0]
 
+
     def __len__(self):
         return self.len
 
@@ -97,45 +101,6 @@ class SensorDataset(Dataset):
         idx = torch.from_numpy(np.array(index))
 
         return data, target, idx
-
-    def train_valid_split(self, train_sbjs, valid_sbjs):
-        _data = np.c_[self.data, self.target]
-
-        train_data = _data[np.isin(_data[:, 0], train_sbjs)]
-        valid_data = _data[np.isin(_data[:, 0], valid_sbjs)]
-
-        # Normalize data wrt. statistics of the training set
-        mean = np.mean(train_data[:, 1:-1], axis=0)
-        std = np.std(train_data[:, 1:-1], axis=0)
-
-        train_data[:, 1:-1] = self.normalize(train_data[:, 1:-1], mean, std)
-        valid_data[:, 1:-1] = self.normalize(valid_data[:, 1:-1], mean, std)
-
-        return train_data, valid_data
-
-    def loso_split(self, sbj):
-        _data = np.c_[self.data, self.target]
-
-        sbj_data = _data[_data[:, 0] == sbj]
-        not_sbj_data = _data[_data[:, 0] != sbj]
-
-        # Normalize data wrt. statistics of the training set
-        mean = np.mean(not_sbj_data[:, 1:-1], axis=0)
-        std = np.std(not_sbj_data[:, 1:-1], axis=0)
-
-        not_sbj_data[:, 1:-1] = self.normalize(not_sbj_data[:, 1:-1], mean, std)
-        sbj_data[:, 1:-1] = self.normalize(sbj_data[:, 1:-1], mean, std)
-
-        return sbj_data, not_sbj_data
-
-    def alter_data(self, data, target, prefix=None):
-        self.data = data
-        self.target = target
-        self.num_sbj = len(np.unique(self.data[:, 0]))
-        self.len = data.shape[0]
-        if prefix is not None:
-            self.prefix = prefix
-        return self
 
     def normalize(self, data, mean=None, std=None):
 
