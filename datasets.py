@@ -73,7 +73,7 @@ class SensorDataset(Dataset):
         self.data = normalize(self.data)
 
         self.data, self.target = sliding_window(self.data, self.target, self.window, self.stride)
-
+        
         self.len = self.data.shape[0]
         assert self.data.shape[0] == self.target.shape[0]
         if name is None:
@@ -103,3 +103,4 @@ class SensorDataset(Dataset):
         idx = torch.from_numpy(np.array(index))
 
         return data, target, idx
+
