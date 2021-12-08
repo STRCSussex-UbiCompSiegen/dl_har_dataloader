@@ -2,23 +2,23 @@
 name: 'hhar'
 data_archive: 'Activity Recognition exp.zip'
 data_files:
-  0:
+  User_0:
     - 'Activity recognition exp/Watch_accelerometer.csv'
-  1:
+  User_1:
     - 'Activity recognition exp/Watch_accelerometer.csv'
-  2:
+  User_2:
     - 'Activity recognition exp/Watch_accelerometer.csv'
-  3:
+  User_3:
     - 'Activity recognition exp/Watch_accelerometer.csv'
-  4:
+  User_4:
     - 'Activity recognition exp/Watch_accelerometer.csv'
-  5:
+  User_5:
     - 'Activity recognition exp/Watch_accelerometer.csv'
-  6:
+  User_6:
     - 'Activity recognition exp/Watch_accelerometer.csv'
-  7:
+  User_7:
     - 'Activity recognition exp/Watch_accelerometer.csv'
-  8:
+  User_8:
     - 'Activity recognition exp/Watch_accelerometer.csv'
 class_map:
   - "Null"

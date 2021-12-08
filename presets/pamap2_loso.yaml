@@ -2,27 +2,27 @@
 name: 'pamap2'
 data_archive: 'PAMAP2_Dataset.zip'
 data_files:
-  101:
+  User_101:
     - 'PAMAP2_Dataset/Protocol/subject101.dat'
     - 'PAMAP2_Dataset/Optional/subject101.dat'
-  102:
+  User_102:
     - 'PAMAP2_Dataset/Protocol/subject102.dat'
-  103:
+  User_103:
     - 'PAMAP2_Dataset/Protocol/subject103.dat'
-  104:
+  User_104:
     - 'PAMAP2_Dataset/Protocol/subject104.dat'
-  105:
+  User_105:
     - 'PAMAP2_Dataset/Protocol/subject105.dat'
     - 'PAMAP2_Dataset/Optional/subject105.dat'
-  106:
+  User_106:
     - 'PAMAP2_Dataset/Protocol/subject106.dat'
     - 'PAMAP2_Dataset/Optional/subject106.dat'
-  107:
+  User_107:
     - 'PAMAP2_Dataset/Protocol/subject107.dat'
-  108:
+  User_108:
     - 'PAMAP2_Dataset/Protocol/subject108.dat'
     - 'PAMAP2_Dataset/Optional/subject108.dat'
-  109:
+  User_109:
     - 'PAMAP2_Dataset/Protocol/subject109.dat'
     - 'PAMAP2_Dataset/Optional/subject109.dat'
 class_map:
