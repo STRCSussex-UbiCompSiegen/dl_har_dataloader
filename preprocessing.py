@@ -166,16 +166,17 @@ def preprocess_dataset(dataset, args):
 
         if dataset.is_multiple_files:
 
-            for user in dataset.data_files.keys():
+            for filename in dataset.data_files.keys():
 
-                data_x, data_y, file_end_indices = iter_files(dataset, zf, user)
+                data_x, data_y, file_end_indices = iter_files(dataset, zf, filename)
 
                 if args.separate:
-                    separate(file_end_indices, data_x, data_y, f'data/{dataset.name}', user)
+                    separate(file_end_indices, data_x, data_y, f'data/{dataset.name}', filename)
                 else:
                     print(
-                        f'Saving file User_{str(user).zfill(3)}_data.npz containing data {data_x.shape}, labels {data_y.shape}')
-                    np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{str(user).zfill(3)}_data.npz', data=data_x,
+                        f'Saving file {filename}.npz containing data {data_x.shape}, labels {data_y.shape}')
+                    np.savez_compressed(f'{args.output_dir}/{dataset.name}/{filename}.npz', data=data_x,
+
                                         target=data_y)
         else:
             print('Datasets contained in a single file not yet implemented')
