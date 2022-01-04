@@ -26,7 +26,7 @@ if p not in sys.path:
     sys.path.append(p)
 
 
-def preprocess(dataset, data):
+def preprocess(dataset, zf, labels_path, data):
     # if dataset.exclude_channels is not None:
     #     data = data.drop(labels=dataset.exclude_channels, axis=1)
 
@@ -35,7 +35,10 @@ def preprocess(dataset, data):
 
     data_x = data[dataset.sensor_columns]
 
-    data_y = data[dataset.label_column]
+    if dataset.label_files is not None:
+        data_y = get_labels_from_file(zf, labels_path, dataset)
+    else:
+        data_y = data[dataset.label_column]
 
     if dataset.label_map is not None:
         data_y = data_y.replace(dataset.label_map)
@@ -49,11 +52,13 @@ def preprocess(dataset, data):
     return data_x, data_y
 
 
-def get_labels_from_file(data, zf, labels_path):
-    labels = pd.read_csv(BytesIO(zf[labels_path[0]].read(labels_path[1])))
-    data = np.hstack((data, labels))
+def get_labels_from_file(zf, labels_path, dataset):
+    labels = pd.read_csv(BytesIO(zf.read(labels_path)), delimiter=dataset.delimiter, header=dataset.header)  # Note
+    # this assumes that the labels are in the same archive as the corresponding data.
 
-    return data
+    labels = labels[dataset.label_column]
+
+    return labels
 
 
 def separate_user_data(data, user, dataset):
@@ -62,14 +67,11 @@ def separate_user_data(data, user, dataset):
     return data[data[dataset.user_column] == user]
 
 
-def load_data(target, zf, user, labels_path, dataset):
+def load_data(target, zf, user, dataset):
     data = safe_load(zf, target, dataset)
 
     if dataset.user_column is not None:
         data = separate_user_data(data, user, dataset)
-
-    if dataset.label_files is not None:
-        data = get_labels_from_file(data, zf, labels_path)
 
     return data
 
@@ -101,8 +103,8 @@ def load_and_preprocess(target, zf, user, labels_path, dataset):
             archive = zf
             path = target
 
-        data = load_data(path, archive, user, labels_path, dataset)
-        x, y = preprocess(dataset, data)
+        data = load_data(path, archive, user, dataset)
+        x, y = preprocess(dataset, archive, labels_path, data)
 
     return x, y
 

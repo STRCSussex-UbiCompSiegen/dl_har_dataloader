@@ -1,0 +1,72 @@
+---
+name: 'shlpreview'
+data_archive:
+  - 'SHLDataset_preview_v1_part1.zip'
+  - 'SHLDataset_preview_v1_part2.zip'
+  - 'SHLDataset_preview_v1_part3.zip'
+data_files:
+  User_0:
+    -
+      - 0
+      - 'SHLDataset_preview_v1/User1/220617/Hips_Motion.txt'
+    -
+      - 0
+      - 'SHLDataset_preview_v1/User1/260617/Hips_Motion.txt'
+    -
+      - 0
+      - 'SHLDataset_preview_v1/User1/270617/Hips_Motion.txt'
+  User_1:
+    -
+      - 1
+      - 'SHLDataset_preview_v1/User2/140617/Hips_Motion.txt'
+    -
+      - 1
+      - 'SHLDataset_preview_v1/User2/140717/Hips_Motion.txt'
+    -
+      - 1
+      - 'SHLDataset_preview_v1/User2/180717/Hips_Motion.txt'
+  User_2:
+    -
+      - 2
+      - 'SHLDataset_preview_v1/User3/030717/Hips_Motion.txt'
+    -
+      - 2
+      - 'SHLDataset_preview_v1/User3/070717/Hips_Motion.txt'
+    -
+      - 2
+      - 'SHLDataset_preview_v1/User3/140617/Hips_Motion.txt'
+class_map:
+  - "Null"
+  - "Still"
+  - "Walking"
+  - "Run"
+  - "Bike"
+  - "Car"
+  - "Bus"
+  - "Train"
+  - "Subway"
+n_classes: 9
+n_channels: 22
+label_column: 2
+sensor_columns: [1, 2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22]
+sr: 100
+url:
+  - 'http://www.shl-dataset.org/wp-content/uploads/SHLDataset_preview_v1_part1.zip'
+  - 'http://www.shl-dataset.org/wp-content/uploads/SHLDataset_preview_v1_part2.zip'
+  - 'http://www.shl-dataset.org/wp-content/uploads/SHLDataset_preview_v1_part3.zip'
+down_sample: 3
+label_files:
+  User_0:
+    - 'SHLDataset_preview_v1/User1/220617/Label.txt'
+    - 'SHLDataset_preview_v1/User1/260617/Label.txt'
+    - 'SHLDataset_preview_v1/User1/270617/Label.txt'
+  User_1:
+    - 'SHLDataset_preview_v1/User2/140617/Label.txt'
+    - 'SHLDataset_preview_v1/User2/140717/Label.txt'
+    - 'SHLDataset_preview_v1/User2/180717/Label.txt'
+  User_2:
+    - 'SHLDataset_preview_v1/User3/030717/Label.txt'
+    - 'SHLDataset_preview_v1/User3/070717/Label.txt'
+    - 'SHLDataset_preview_v1/User3/140617/Label.txt'
+n_channels_per_file: 22
+delimiter: ' '
