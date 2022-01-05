@@ -69,7 +69,6 @@ class SensorDataset(Dataset):
 
         self.data = np.concatenate([np.load(path, allow_pickle=True)['data'] for path in self.path_dataset])
         self.target = np.concatenate([np.load(path, allow_pickle=True)['target'] for path in self.path_dataset])
-
         self.data = normalize(self.data)
 
         self.data, self.target = sliding_window(self.data, self.target, self.window, self.stride)
