@@ -95,6 +95,16 @@ class DatasetLoader:
         if self.name in ['pamap2', 'opportunity']:
             self.multiple_recordings_per_user = True
 
+        # Start and end indices for train/test/val split
+        self.split = {'train': [0, 0.7],
+                      'val': [0.7, 0.8],
+                      'test': [0.8, 1]}
+
+        if isinstance(data_files, dict):
+            self.n_users = len(data_files.keys())
+        else:
+            self.n_users = 1
+
     def open_zip(self):
         """Find the data and return a zipfile or list of zipfiles
         """
