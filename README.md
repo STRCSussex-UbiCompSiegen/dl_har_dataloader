@@ -17,7 +17,7 @@ We currently support the following datasets:
 
 - Opportunity dataset (`opportunity_loso`) and challenge split (`opportunity_challenge`) [[1]](#1)
 - RealWorld HAR dataset (`rwhar_loso`) [[3]](#3)
-- Skoda Mini Checkpoint dataset (`skoda_challenge`) [[8]](#5)
+- Skoda Mini Checkpoint dataset (`skoda_split`) [[8]](#5)
 - Physical Activity Monitoring dataset (`pamap2_loso`) [[6]](#6)
 - Heterogeneity Human Activity Recognition dataset (`hhar_loso`) [[2]](#2)
 - University of Sussex-Huawei Locomotion dataset (`shl_loso`) [[4]](#4)
