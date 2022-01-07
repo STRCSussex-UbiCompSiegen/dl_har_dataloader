@@ -66,7 +66,8 @@ def separate(indices, data_x, data_y, path, prefix):
 def safe_load(archive, path, dataset):
     if '.mat' in path:
         data = loadmat(BytesIO(archive.read(path)))
-        data = data[dataset.variable_name]
+        data = data[dataset.variable_name[path]]
+        data = pd.DataFrame(data)
     else:
         data = pd.read_csv(BytesIO(archive.read(path)), delimiter=dataset.delimiter, header=dataset.header)
 

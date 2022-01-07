@@ -1,0 +1,41 @@
+---
+name: 'skoda'
+data_archive: 'skodaminicp_2015_08.zip'
+data_files:
+  - 'SkodaMiniCP_2015_08/left_classall_clean.mat'
+class_map:
+  - "Null"
+  - "Write on notepad"
+  - "Open hood"
+  - "Close hood"
+  - "Check gaps on the front door"
+  - "Open left front door"
+  - "Close left front door"
+  - "close both left door"
+  - "Check trunk gaps"
+  - "Open and close trunk"
+  - "Check steering wheel"
+n_classes: 11
+n_channels: 60
+label_column: 0
+sensor_columns: [3, 4, 5, 10, 11, 12, 17, 18, 19, 24, 25, 26, 31, 32, 33, 38, 39, 40, 45, 46, 47, 52, 53, 54, 59, 60,
+                 61, 66, 67, 68]
+sr: 98
+url: 'http://har-dataset.org/lib/exe/fetch.php?media=wiki:dataset:skodaminicp:skodaminicp_2015_08.zip'
+down_sample: 3
+n_channels_per_file: 30
+label_map:
+  32: 0
+  48: 1
+  49: 2
+  50: 3
+  51: 4
+  52: 5
+  53: 6
+  54: 7
+  55: 8
+  56: 9
+  57: 10
+variable_name:
+  SkodaMiniCP_2015_08/left_classall_clean.mat : 'left_classall_clean'
+  SkodaMiniCP_2015_08/right_classall_clean.mat : 'right_classall_clean'

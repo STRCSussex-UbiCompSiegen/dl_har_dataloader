@@ -26,7 +26,19 @@ if p not in sys.path:
     sys.path.append(p)
 
 
-def preprocess(dataset, data):
+def get_labels_from_file(labels_path, zf, user, dataset):
+    labels = pd.read_csv(BytesIO(zf.read(labels_path)), delimiter=dataset.delimiter, header=dataset.header)  # Note
+    # this assumes that the labels are in the same archive as the corresponding data.
+
+    labels = labels[dataset.label_column]
+
+    if user in ['train', 'test', 'val']:
+        labels = labels[dataset.split[user][0]*len(labels):dataset.split[user][1]*len(labels)]
+
+    return labels
+
+
+def preprocess(data, labels_path, zf, user, dataset):
     # if dataset.exclude_channels is not None:
     #     data = data.drop(labels=dataset.exclude_channels, axis=1)
 
@@ -35,7 +47,10 @@ def preprocess(dataset, data):
 
     data_x = data[dataset.sensor_columns]
 
-    data_y = data[dataset.label_column]
+    if dataset.label_files is not None:
+        data_y = get_labels_from_file(labels_path, zf, user, dataset)
+    else:
+        data_y = data[dataset.label_column]
 
     if dataset.label_map is not None:
         data_y = data_y.replace(dataset.label_map)
@@ -49,71 +64,55 @@ def preprocess(dataset, data):
     return data_x, data_y
 
 
-def get_labels_from_file(data, zf, labels_path):
-    labels = pd.read_csv(BytesIO(zf[labels_path[0]].read(labels_path[1])))
-    data = np.hstack((data, labels))
-
-    return data
-
-
 def separate_user_data(data, user, dataset):
     if dataset.user_map is not None:
         user = list(dataset.user_map.keys())[user]
     return data[data[dataset.user_column] == user]
 
 
-def load_data(target, zf, user, labels_path, dataset):
+def load_data(target, zf, user, dataset):
     data = safe_load(zf, target, dataset)
 
     if dataset.user_column is not None:
         data = separate_user_data(data, user, dataset)
 
-    if dataset.label_files is not None:
-        data = get_labels_from_file(data, zf, labels_path)
+    if user in ['train', 'test', 'val']:
+        print(user, int(dataset.split[user][0]*len(data)), int(dataset.split[user][1]*len(data)))
+        data = data[int(dataset.split[user][0]*len(data)):int(dataset.split[user][1]*len(data))]
 
     return data
 
 
 def load_and_preprocess(target, zf, user, labels_path, dataset):
 
-    if dataset.n_channels_per_file != dataset.n_channels:
-        for i, file in enumerate(target):
-            if dataset.is_multiple_zips:
-                archive = zf[file[0]]
-                path = file[1]
-            else:
-                archive = zf
-                path = file
-            data = load_data(path, archive, user, labels_path, dataset)
-            partial_x, y = preprocess(dataset, data)
-
-            if i == 0:
-                x = np.vstack((np.empty((0, dataset.n_channels_per_file)), partial_x))
-            else:
-                x = np.hstack((x, partial_x))
+    if dataset.is_multiple_zips:
+        archive = zf[target[0]]
+        path = target[1]
 
     else:
-        if dataset.is_multiple_zips:
-            archive = zf[target[0]]
-            path = target[1]
+        archive = zf
+        path = target
 
-        else:
-            archive = zf
-            path = target
-
-        data = load_data(path, archive, user, labels_path, dataset)
-        x, y = preprocess(dataset, data)
+    data = load_data(path, archive, user, dataset)
+    x, y = preprocess(data, labels_path, archive, user, dataset)
 
     return x, y
 
 
 def iter_files(dataset, zf, user):
-    files = dataset.data_files
+
+    #Multiple users case
+    if user in ['train', 'test', 'val']:
+        files = dataset.data_files
+    # Single user case
+    else:
+        files = dataset.data_files[user]
+
     label_files = dataset.label_files
 
     file_end_indices = [0]
 
-    for i, filepath in enumerate(files[user]):
+    for i, filepath in enumerate(files):
         if label_files is not None:
             labels_path = label_files[user][i]
             x, y = load_and_preprocess(filepath, zf, user, labels_path, dataset)
@@ -125,6 +124,7 @@ def iter_files(dataset, zf, user):
             data_x = np.array(x)
         else:
             if dataset.n_channels_per_file != dataset.n_channels:
+                assert len(data_x) == len(x), "All sensor channels must contain the same amount of samples."
                 data_x = np.hstack((data_x, x))
             else:
                 data_x = np.vstack((data_x, x))
@@ -166,18 +166,32 @@ def preprocess_dataset(dataset, args):
 
         if dataset.is_multiple_files:
 
-            for filename in dataset.data_files.keys():
+            # Multiple users case
+            if dataset.n_users > 1:
 
-                data_x, data_y, file_end_indices = iter_files(dataset, zf, filename)
+                for user in dataset.data_files.keys():
 
-                if args.separate:
-                    separate(file_end_indices, data_x, data_y, f'data/{dataset.name}', filename)
-                else:
+                    data_x, data_y, file_end_indices = iter_files(dataset, zf, user)
+
+                    if args.separate:
+                        separate(file_end_indices, data_x, data_y, f'data/{dataset.name}', user)
+                    else:
+                        print(
+                            f'Saving file {user}.npz containing data {data_x.shape}, labels {data_y.shape}')
+                        np.savez_compressed(f'{args.output_dir}/{dataset.name}/{user}.npz', data=data_x,
+                                            target=data_y)
+
+            else:
+
+                for split in ['train', 'test', 'val']:
+
+                    data_x, data_y, _ = iter_files(dataset, zf, split)
+
                     print(
-                        f'Saving file {filename}.npz containing data {data_x.shape}, labels {data_y.shape}')
-                    np.savez_compressed(f'{args.output_dir}/{dataset.name}/{filename}.npz', data=data_x,
-
+                            f'Saving file {split}.npz containing data {data_x.shape}, labels {data_y.shape}')
+                    np.savez_compressed(f'{args.output_dir}/{dataset.name}/{split}.npz', data=data_x,
                                         target=data_y)
+
         else:
             print('Datasets contained in a single file not yet implemented')
 
