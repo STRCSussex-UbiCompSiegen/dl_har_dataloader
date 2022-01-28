@@ -89,7 +89,7 @@ def create_rwhar_dataset(raw_dir):
             acc_tab = pd.DataFrame(acc_tab)
             acc_tab["location"] = loc
 
-            data = data.append(acc_tab)
+            data = pd.concat([data, acc_tab])
 
         return data
 
@@ -127,10 +127,10 @@ def create_rwhar_dataset(raw_dir):
                 table = rwhar_load_table_activity(path_acc)
 
                 table["activity"] = RWHAR_ACTIVITY_NUM[activity]  # add a activity column and fill it with activity num
-                sub_pd = sub_pd.append(table)
+                sub_pd = pd.concat([sub_pd, table])
 
             sub_pd["subject"] = subject_num  # add subject id to all entries
-            dataset = dataset.append(sub_pd)
+            dataset = pd.concat([dataset, sub_pd])
             dataset = dataset[dataset.location == RWHAR_BAND_LOCATION[sel_location]]
 
         if sel_location is not None:
