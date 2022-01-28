@@ -3,6 +3,7 @@ name: 'skoda'
 data_archive: 'skodaminicp_2015_08.zip'
 data_files:
   - 'SkodaMiniCP_2015_08/left_classall_clean.mat'
+  - 'SkodaMiniCP_2015_08/right_classall_clean.mat'
 class_map:
   - "Null"
   - "Write on notepad"
