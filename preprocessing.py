@@ -99,6 +99,16 @@ def load_and_preprocess(target, zf, user, labels_path, dataset):
     return x, y
 
 
+def safe_hstack(top, bottom):
+
+    if top.shape[0] > bottom.shape[0]:
+        bottom = np.concatenate((bottom, np.zeros((top.shape[0] - bottom.shape[0], bottom.shape[1]))), axis=0)
+    elif bottom.shape[0] > top.shape[0]:
+        top = np.concatenate((top, np.zeros((bottom.shape[0] - top.shape[0], top.shape[1]))), axis=0)
+
+    return np.hstack((top, bottom))
+
+
 def iter_files(dataset, zf, user):
 
     #Multiple users case
@@ -124,8 +134,8 @@ def iter_files(dataset, zf, user):
             data_x = np.array(x)
         else:
             if dataset.n_channels_per_file != dataset.n_channels:
+                data_x = safe_hstack(data_x, x)
                 assert len(data_x) == len(x), "All sensor channels must contain the same amount of samples."
-                data_x = np.hstack((data_x, x))
             else:
                 data_x = np.vstack((data_x, x))
 
@@ -160,7 +170,7 @@ def preprocess_dataset(dataset, args):
             data_y = np.array(y, dtype=np.uint8)
             print(
                 f'Saving file User_{str(user).zfill(3)}_data.npz containing data {data_x.shape}, labels {data_y.shape}')
-            np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{str(user).zfill(3)}_data.npz', data=data_x, target=data_y)
+            np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{str(user).zfill(3)}.npz', data=data_x, target=data_y)
 
     else:
 
