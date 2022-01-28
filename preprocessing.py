@@ -33,7 +33,7 @@ def get_labels_from_file(labels_path, zf, user, dataset):
     labels = labels[dataset.label_column]
 
     if user in ['train', 'test', 'val']:
-        labels = labels[dataset.split[user][0]*len(labels):dataset.split[user][1]*len(labels)]
+        labels = labels[dataset.split[user][0] * len(labels):dataset.split[user][1] * len(labels)]
 
     return labels
 
@@ -66,7 +66,7 @@ def preprocess(data, labels_path, zf, user, dataset):
 
 def separate_user_data(data, user, dataset):
     if dataset.user_map is not None:
-        user = list(dataset.user_map.keys())[user]
+        user = list(dataset.user_map.keys())[int(user[-1])]  # User is a string ending in an integer (i.e. User_0)
     return data[data[dataset.user_column] == user]
 
 
@@ -77,14 +77,13 @@ def load_data(target, zf, user, dataset):
         data = separate_user_data(data, user, dataset)
 
     if user in ['train', 'test', 'val']:
-        print(user, int(dataset.split[user][0]*len(data)), int(dataset.split[user][1]*len(data)))
-        data = data[int(dataset.split[user][0]*len(data)):int(dataset.split[user][1]*len(data))]
+        print(user, int(dataset.split[user][0] * len(data)), int(dataset.split[user][1] * len(data)))
+        data = data[int(dataset.split[user][0] * len(data)):int(dataset.split[user][1] * len(data))]
 
     return data
 
 
 def load_and_preprocess(target, zf, user, labels_path, dataset):
-
     if dataset.is_multiple_zips:
         archive = zf[target[0]]
         path = target[1]
@@ -100,19 +99,16 @@ def load_and_preprocess(target, zf, user, labels_path, dataset):
 
 
 def iter_files(dataset, zf, user):
-
-    #Multiple users case
-    if user in ['train', 'test', 'val']:
-        files = dataset.data_files
-    # Single user case
-    else:
-        files = dataset.data_files[user]
+    files = dataset.data_files[user]
 
     label_files = dataset.label_files
 
     file_end_indices = [0]
 
     for i, filepath in enumerate(files):
+        print(files)
+        print(user)
+        print(filepath)
         if label_files is not None:
             labels_path = label_files[user][i]
             x, y = load_and_preprocess(filepath, zf, user, labels_path, dataset)
@@ -155,12 +151,13 @@ def preprocess_dataset(dataset, args):
         data['activity'] = data['activity'].map(dataset.label_map)
 
         for user in range(15):
-            x, y = preprocess(dataset, data[data['subject'] == user])
+            x, y = preprocess(data[data['subject'] == user], None, zf, user, dataset)
             data_x = np.array(x)
             data_y = np.array(y, dtype=np.uint8)
             print(
                 f'Saving file User_{str(user).zfill(3)}_data.npz containing data {data_x.shape}, labels {data_y.shape}')
-            np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{str(user).zfill(3)}_data.npz', data=data_x, target=data_y)
+            np.savez_compressed(f'{args.output_dir}/{dataset.name}/User_{str(user).zfill(3)}_data.npz', data=data_x,
+                                target=data_y)
 
     else:
 
@@ -184,11 +181,10 @@ def preprocess_dataset(dataset, args):
             else:
 
                 for split in ['train', 'test', 'val']:
-
                     data_x, data_y, _ = iter_files(dataset, zf, split)
 
                     print(
-                            f'Saving file {split}.npz containing data {data_x.shape}, labels {data_y.shape}')
+                        f'Saving file {split}.npz containing data {data_x.shape}, labels {data_y.shape}')
                     np.savez_compressed(f'{args.output_dir}/{dataset.name}/{split}.npz', data=data_x,
                                         target=data_y)
 
