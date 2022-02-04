@@ -92,7 +92,7 @@ class DatasetLoader:
 
         self.multiple_recordings_per_user = False
 
-        if self.name in ['pamap2', 'opportunity']:
+        if self.name in ['pamap2', 'opportunity', 'shlpreview']:
             self.multiple_recordings_per_user = True
 
         # Start and end indices for train/test/val split
