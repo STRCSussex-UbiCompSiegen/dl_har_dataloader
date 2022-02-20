@@ -88,19 +88,20 @@ def butter_lowpass_filter(data, cutoff, fs, order=5):
 
 
 def handle_missing_data(data):
+    data_copy = data.copy()
     for column in data:
         ind = data[column].last_valid_index()
         try:
-            data.loc[ind:, column] = data.loc[ind:, column].fillna(0.0)
+            data_copy.loc[ind:, column] = data.loc[ind:, column].fillna(0.0)
         except KeyError:
             pass
 
     # Perform linear interpolation to remove missing values
-    data = data.interpolate(method='linear', limit_direction='forward', axis=0)
+    data_copy = data_copy.interpolate(method='linear', limit_direction='forward', axis=0)
 
     # Any remaining missing data are converted to zero
-    data = data.fillna(0.0)
+    data_copy = data_copy.fillna(0.0)
 
-    assert not np.isnan(np.sum(data.to_numpy()))
+    assert not np.isnan(np.sum(data_copy.to_numpy()))
 
-    return data
+    return data_copy

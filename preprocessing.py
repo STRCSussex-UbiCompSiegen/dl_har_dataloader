@@ -77,7 +77,6 @@ def load_data(target, zf, user, dataset):
         data = separate_user_data(data, user, dataset)
 
     if user in ['train', 'test', 'val']:
-        print(user, int(dataset.split[user][0] * len(data)), int(dataset.split[user][1] * len(data)))
         data = data[int(dataset.split[user][0] * len(data)):int(dataset.split[user][1] * len(data))]
 
     return data
