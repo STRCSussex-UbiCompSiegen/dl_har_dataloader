@@ -177,7 +177,7 @@ def preprocess_dataset(dataset, args):
                     data_x, data_y, file_end_indices = iter_files(dataset, zf, user)
 
                     if args.separate:
-                        separate(file_end_indices, data_x, data_y, f'data/{dataset.name}', user)
+                        separate(file_end_indices, data_x, data_y, f'{args.output_dir}/{dataset.name}', user)
                     else:
                         print(
                             f'Saving file {user}.npz containing data {data_x.shape}, labels {data_y.shape}')

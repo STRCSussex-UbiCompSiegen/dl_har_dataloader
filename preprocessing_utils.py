@@ -56,11 +56,11 @@ def downsample(data_x, data_y, dataset):
 
 
 def separate(indices, data_x, data_y, path, prefix):
-    for i in range(len(indices)):
+    for i in range(len(indices)-1):
         start = indices[i]
         stop = indices[i + 1]
         print(f'Separating {prefix} data {start}:{stop} -> {prefix}_data_{i}.npz')
-        np.save_compressed(f'{path}/{prefix}_data_{i}.npz', data=data_x[start:stop], target=data_y[start:stop])
+        np.savez_compressed(f'{path}/{prefix}_data_{i}.npz', data=data_x[start:stop], target=data_y[start:stop])
 
 
 def safe_load(archive, path, dataset):
