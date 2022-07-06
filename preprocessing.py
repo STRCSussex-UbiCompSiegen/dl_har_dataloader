@@ -108,7 +108,10 @@ def safe_hstack(top, bottom):
 
 
 def iter_files(dataset, zf, user):
-    files = dataset.data_files[user]
+    if dataset.n_users > 1:
+        files = dataset.data_files[user]
+    else:
+        files = dataset.data_files
 
     label_files = dataset.label_files
 
@@ -177,13 +180,13 @@ def preprocess_dataset(dataset, args):
                     data_x, data_y, file_end_indices = iter_files(dataset, zf, user)
 
                     if args.separate:
-                        separate(file_end_indices, data_x, data_y, f'data/{dataset.name}', user)
+                        separate(file_end_indices, data_x, data_y, f'{args.output_dir}/{dataset.name}', user)
                     else:
                         print(
                             f'Saving file {user}.npz containing data {data_x.shape}, labels {data_y.shape}')
                         np.savez_compressed(f'{args.output_dir}/{dataset.name}/{user}.npz', data=data_x,
                                             target=data_y)
-
+            # Single user case
             else:
 
                 for split in ['train', 'test', 'val']:
