@@ -25,5 +25,6 @@ def sliding_window(x, y, window, stride, scheme="last"):
 
 
 def normalize(data):
-
-    return (data - np.mean(data)) / np.std(data)
+    std = np.std(data, axis=0)
+    std[std == 0] = 1
+    return (data - np.mean(data, axis=0)) / std
