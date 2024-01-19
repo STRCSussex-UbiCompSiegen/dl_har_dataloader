@@ -18,14 +18,19 @@ import yaml
 class ProgressBar():
     def __init__(self):
         self.pbar = None
+        self.no_content_length = False
 
     def __call__(self, block_num, block_size, total_size):
+        if total_size == -1:
+            self.no_content_length = True
+
         if not self.pbar:
-            self.pbar = progressbar.ProgressBar(maxval=total_size)
+            if self.no_content_length:
+                self.pbar = progressbar.ProgressBar(maxval=progressbar.UnknownLength if self.no_content_length else total_size)
             self.pbar.start()
 
         downloaded = block_num * block_size
-        if downloaded < total_size:
+        if downloaded < total_size or self.no_content_length:
             self.pbar.update(downloaded)
         else:
             self.pbar.finish()
